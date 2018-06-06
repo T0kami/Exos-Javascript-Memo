@@ -8,7 +8,53 @@
     </head>
     <body>
 
-    <script src="script.js"></script>
+      <div id="deck">
+
+      </div>
+
+    <script>
+
+
+      function createDeck(numberOfCards){
+        let deck = [];
+
+        for (var i = 0; i < numberOfCards; i++) {
+          let img = new Image(118, 194);
+          img.src = "img/"+(i+1)+".jpg";
+          img.classList.toggle(i+1);
+          deck.push(img);
+        }
+
+        return deck.concat(deck);
+      }
+
+
+      function displayDeck(deck, deckElement){
+        for (let i of deck){
+          let item = document.getElementsByClassName(i.classList[0])[0];
+          if (item != null){
+
+            deckElement.appendChild(i.cloneNode());
+          }
+          else deckElement.appendChild(i);
+
+        }
+
+      }
+
+      function shuffle(deck) {
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        return deck;
+      }
+
+      var deck = shuffle(createDeck(9));
+      deckElement  = document.getElementById('deck');
+
+      displayDeck(deck, deckElement);
+    </script>
 
     </body>
 </html>
