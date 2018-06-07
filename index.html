@@ -14,14 +14,15 @@
 
     <script>
 
-
+      
       function createDeck(numberOfCards){
         let deck = [];
 
         for (var i = 0; i < numberOfCards; i++) {
           let img = new Image(118, 194);
-          img.src = "img/"+(i+1)+".jpg";
-          img.classList.toggle(i+1);
+          img.src = "img/card.jpg";
+          img.setAttribute("number", i);
+
           deck.push(img);
         }
 
@@ -30,19 +31,21 @@
 
 
       function displayDeck(deck, deckElement){
-        for (let i of deck){
-          let item = document.getElementsByClassName(i.classList[0])[0];
-          if (item != null){
+        for (let item of deck){
 
-            deckElement.appendChild(i.cloneNode());
+          let htmlItem = document.querySelector('[number="'+item.getAttribute("number")+'"]');
+
+          if (htmlItem == null){
+            deckElement.appendChild(item);
+
           }
-          else deckElement.appendChild(i);
+          else deckElement.appendChild(item.cloneNode());
 
         }
 
       }
 
-      function shuffle(deck) {
+      function shuffleDeck(deck) {
         for (let i = deck.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -50,10 +53,50 @@
         return deck;
       }
 
-      var deck = shuffle(createDeck(9));
-      deckElement  = document.getElementById('deck');
+      function showCard(event){
+        event.target.src = "img/"+event.target.getAttribute("number")+".jpg";
 
+
+        checkMatching(event);
+
+      }
+
+      function checkMatching(event){
+        if (!event.target.className.includes("disabled") ){
+
+          openedCards.push(event.target);
+          event.target.classList.toggle("disabled", true);
+        }
+
+        if(openedCards.length === 2){
+
+              if(openedCards[0].getAttribute("number") !== openedCards[1].getAttribute("number")){
+                  setTimeout(resetOpenedCards, 700, openedCards);
+
+              }
+              openedCards = [];
+            }
+
+      }
+
+      function resetOpenedCards(openedCards){
+        for (let i of openedCards){
+          i.src = "img/card.jpg";
+          i.classList.toggle("disabled", false);
+        }
+
+      }
+
+
+      var deck = shuffleDeck(createDeck(9));
+      deckElement  = document.getElementById('deck');
+      var openedCards = [];
       displayDeck(deck, deckElement);
+
+
+      for (let i of document.getElementsByTagName("img")){
+        i.addEventListener("click", showCard);
+      }
     </script>
 
     </body>
